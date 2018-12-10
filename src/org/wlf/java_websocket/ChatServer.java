@@ -109,13 +109,14 @@ public class ChatServer extends WebSocketServer {
 	public void onMessage(WebSocket conn, String message) {
 
 		try {
-			String type2 = Utils.getProtocalType(message);
-			String userId = Utils.getProtocalUserId(message);
+			String type2 = Utils.getProtocolType(message);
+			String userId = Utils.getProtocolUserId(message);
 			if(BaseRequest.TYPE_GETCONTACTS.equals(type2)){
 				GetContactsResp resp = makeGetContactsResp(userId);
 				String text = Utils.objectToJson(resp);
 				System.out.println(userId +" want get context, i give him "+text);
 				conn.send(text);
+				return;
 			}else if(BaseRequest.TYPE_TALK.equals(type2)){
 				String toWho = Utils.getStringValueFromJson(message, "toWho");
 				if(toWho == null) {
@@ -135,6 +136,7 @@ public class ChatServer extends WebSocketServer {
 
 				String text = Utils.objectToJson(talkResp);
 				chat.send(text);
+				return;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

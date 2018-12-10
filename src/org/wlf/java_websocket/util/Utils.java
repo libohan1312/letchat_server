@@ -21,11 +21,11 @@ public class Utils {
 
 
 
-    public static String getProtocalType(String msg) throws IOException {
+    public static String getProtocolType(String msg) throws IOException {
         return getStringValueFromJson(msg, "type");
     }
     
-    public static String getProtocalUserId(String msg) throws IOException {
+    public static String getProtocolUserId(String msg) throws IOException {
         return getStringValueFromJson(msg, "userId");
     }
     
@@ -58,7 +58,7 @@ public class Utils {
 
     public static void main(String[] args){
     	try {
-			String ttt = getProtocalUserId("{\"type\":\"GetContactsResp\",\"userId\":\"lbh2\"}");
+			String ttt = getProtocolUserId("{\"type\":\"GetContactsResp\",\"userId\":\"lbh2\"}");
 			System.out.println(ttt);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

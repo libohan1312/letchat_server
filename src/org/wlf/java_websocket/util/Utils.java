@@ -3,12 +3,10 @@ package org.wlf.java_websocket.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
-
-import org.wlf.java_websocket.bean.Contact;
 
 /**
  * Created by Administrator on 2016/8/21.
@@ -32,14 +30,16 @@ public class Utils {
     }
     
     public static String getStringValueFromJson(String msg,String key) throws IOException{
-    	System.out.println(msg);
+    	System.out.println("json paras is work to :"+msg+" , key is "+key);
     	JsonReader jsonReader = new JsonReader(new StringReader(msg));
         jsonReader.beginObject();
 
         while (jsonReader.hasNext()){
             String name = jsonReader.nextName();
-            System.out.println(name);
             if(key.equals(name)){
+                if(jsonReader.peek() == JsonToken.NULL){
+                    return null;
+                }
                 return jsonReader.nextString();
             }else {
 				jsonReader.skipValue();

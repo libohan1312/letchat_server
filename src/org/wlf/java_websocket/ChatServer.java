@@ -59,6 +59,10 @@ public class ChatServer extends WebSocketServer {
 			Entry<String,WebSocket> entry = iterator.next();
 			if(entry.getKey().equals(userId)) continue;
 			WebSocket webSocket = entry.getValue();
+			if(webSocket == null || !webSocket.isOpen()){
+				System.out.println("i got no client or client is not opened");
+				return;
+			}
 			System.out.println("hi i got "+entry.getKey());
 			GetContactsResp resp = makeGetContactsResp(entry.getKey());
 			String text = Utils.objectToJson(resp);

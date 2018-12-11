@@ -19,11 +19,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * @author wlf(Andy)
- * @datetime 2016-02-16 09:28 GMT+8
- * @email 411086563@qq.com
- */
+
 public class ChatServer extends WebSocketServer {
 	
 	ConcurrentHashMap<String,WebSocket> chats;
@@ -37,6 +33,14 @@ public class ChatServer extends WebSocketServer {
 		super(address);
 	}
 
+	private void sendInternal(WebSocket conn,String msg){
+		if(conn.isOpen()){
+			conn.send(msg);
+		}else {
+			chats.remove(conn);
+		}
+	}
+
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
@@ -44,7 +48,7 @@ public class ChatServer extends WebSocketServer {
 		
 		chats.put(userId, conn);
 		
-		conn.send("you are "+userId);
+		sendInternal(conn,"you are "+userId);
 
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
@@ -66,7 +70,7 @@ public class ChatServer extends WebSocketServer {
 			System.out.println("hi i got "+entry.getKey());
 			GetContactsResp resp = makeGetContactsResp(entry.getKey());
 			String text = Utils.objectToJson(resp);
-			webSocket.send(text);
+			sendInternal(webSocket,text);
 			System.out.println("i send "+text+" to him");
 		}
 		
@@ -115,7 +119,7 @@ public class ChatServer extends WebSocketServer {
 				GetContactsResp resp = makeGetContactsResp(userId);
 				String text = Utils.objectToJson(resp);
 				System.out.println(userId +" want get context, i give him "+text);
-				conn.send(text);
+				sendInternal(conn,text);
 				return;
 			}else if(BaseRequest.TYPE_TALK.equals(type2)){
 				String toWho = Utils.getStringValueFromJson(message, "toWho");
@@ -135,7 +139,7 @@ public class ChatServer extends WebSocketServer {
 				
 
 				String text = Utils.objectToJson(talkResp);
-				chat.send(text);
+				sendInternal(chat,text);
 				return;
 			}
 		} catch (IOException e) {
@@ -160,7 +164,7 @@ public class ChatServer extends WebSocketServer {
 		Collection<WebSocket> conns = connections();
 		synchronized (conns) {
 			for (WebSocket client : conns) {
-				client.send(text);
+				sendInternal(client,text);
 			}
 		}
 	}

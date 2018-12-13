@@ -85,7 +85,6 @@ public class ChatServer extends WebSocketServer {
 		
 		while(it.hasNext()){
 			WebSocket close = it.next().getValue();
-			//System.out.println(close.getRemoteSocketAddress());
 			if(close.isClosed()){
 				System.out.println(conn.getRemoteSocketAddress().getAddress()
 						.getHostAddress()
@@ -113,8 +112,13 @@ public class ChatServer extends WebSocketServer {
 	public void onMessage(WebSocket conn, String message) {
 
 		try {
-			String type2 = Utils.getProtocolType(message);
-			String userId = Utils.getProtocolUserId(message);
+			BaseRequest baseRequest = Utils.getBaseRequestFromJson(message);
+			if(baseRequest == null){
+				System.err.println("bad request!!!");
+				return;
+			}
+			String type2 = baseRequest.getType();
+			String userId = baseRequest.getUserId();
 			if(BaseRequest.TYPE_GETCONTACTS.equals(type2)){
 				GetContactsResp resp = makeGetContactsResp(userId);
 				String text = Utils.objectToJson(resp);

@@ -2,8 +2,11 @@ package org.wlf.java_websocket.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
+import org.wlf.java_websocket.request.BaseRequest;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -19,14 +22,19 @@ public class Utils {
         return json;
     }
 
-
-
-    public static String getProtocolType(String msg) throws IOException {
-        return getStringValueFromJson(msg, "type");
+    public static BaseRequest getBaseRequestFromJson(String json){
+        if(!isGoodJson(json)){
+            return null;
+        }
+        return jsonToObject(json,BaseRequest.class);
     }
-    
-    public static String getProtocolUserId(String msg) throws IOException {
-        return getStringValueFromJson(msg, "userId");
+    public static boolean isGoodJson(String json) {
+        try {
+            new JsonParser().parse(json);
+            return true;
+        } catch (JsonParseException e) {
+            return false;
+        }
     }
     
     public static String getStringValueFromJson(String msg,String key) throws IOException{
@@ -57,12 +65,12 @@ public class Utils {
     }
 
     public static void main(String[] args){
-    	try {
-			String ttt = getProtocolUserId("{\"type\":\"GetContactsResp\",\"userId\":\"lbh2\"}");
-			System.out.println(ttt);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//    	try {
+//			//String ttt = getProtocolUserId("{\"type\":\"GetContactsResp\",\"userId\":\"lbh2\"}");
+//			System.out.println(ttt);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     }
 }

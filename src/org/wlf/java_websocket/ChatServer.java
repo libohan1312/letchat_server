@@ -4,6 +4,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.wlf.java_websocket.bean.Contact;
 import org.wlf.java_websocket.request.BaseRequest;
+import org.wlf.java_websocket.request.TalkRequest;
 import org.wlf.java_websocket.response.GetContactsResp;
 import org.wlf.java_websocket.response.TalkResp;
 import org.wlf.java_websocket.util.Utils;
@@ -52,7 +53,7 @@ public class ChatServer extends WebSocketServer {
 
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
-				+ " 进入房间 ！");
+				+ " 进入服务 ！");
 		
 		System.out.println("当前人数："+chats.size()+"\n都有谁：");
 		for(String name : chats.keySet()){
@@ -88,7 +89,7 @@ public class ChatServer extends WebSocketServer {
 			if(close.isClosed()){
 				System.out.println(conn.getRemoteSocketAddress().getAddress()
 						.getHostAddress()
-						+ " 离开房间 ！");
+						+ " 离开服务 ！");
 				it.remove();
 			}else if(close.isConnecting()){
 				System.out.println("is connecting");
@@ -126,7 +127,8 @@ public class ChatServer extends WebSocketServer {
 				sendInternal(conn,text);
 				return;
 			}else if(BaseRequest.TYPE_TALK.equals(type2)){
-				String toWho = Utils.getStringValueFromJson(message, "toWho");
+				TalkRequest talkRequest = Utils.jsonToObject(message,TalkRequest.class);
+				String toWho = talkRequest.toWho;
 				if(toWho == null) {
 					System.out.println("to who is null");
 					return;
@@ -136,17 +138,16 @@ public class ChatServer extends WebSocketServer {
 					System.out.println("sorry there is no "+toWho +" who you want to chat!");
 					return;
 				}
-				String content = Utils.getStringValueFromJson(message, "content");
+				String content = talkRequest.content;
 				TalkResp talkResp = new TalkResp();
 				talkResp.setContent(content);
 				talkResp.setFromWho(userId);
-				
 
 				String text = Utils.objectToJson(talkResp);
 				sendInternal(chat,text);
 				return;
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -195,7 +196,7 @@ public class ChatServer extends WebSocketServer {
 		ChatServer server = new ChatServer(port);
 		server.start();
 
-		System.out.println("房间已开启，等待客户端接入，端口号: " + server.getAddress());
+		System.out.println("服务已开启，等待客户端接入，端口号: " + server.getAddress());
 
 		BufferedReader webSocketIn = new BufferedReader(new InputStreamReader(
 				System.in));

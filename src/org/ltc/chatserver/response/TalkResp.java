@@ -1,4 +1,4 @@
-package org.wlf.java_websocket.response;
+package org.ltc.chatserver.response;
 
 public class TalkResp extends BaseResponse {
 	private String content;

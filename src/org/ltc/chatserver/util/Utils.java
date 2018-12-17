@@ -1,4 +1,4 @@
-package org.wlf.java_websocket.util;
+package org.ltc.chatserver.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -6,7 +6,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
-import org.wlf.java_websocket.request.BaseRequest;
+import org.ltc.chatserver.request.BaseRequest;
 
 import java.io.IOException;
 import java.io.StringReader;

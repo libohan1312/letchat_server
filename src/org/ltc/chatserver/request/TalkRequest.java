@@ -1,4 +1,4 @@
-package org.wlf.java_websocket.request;
+package org.ltc.chatserver.request;
 
 public class TalkRequest extends BaseRequest {
         public String content;

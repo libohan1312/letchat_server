@@ -1,19 +1,18 @@
-package org.wlf.java_websocket;
+package org.ltc.chatserver;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.wlf.java_websocket.bean.Contact;
-import org.wlf.java_websocket.request.BaseRequest;
-import org.wlf.java_websocket.request.TalkRequest;
-import org.wlf.java_websocket.response.GetContactsResp;
-import org.wlf.java_websocket.response.TalkResp;
-import org.wlf.java_websocket.util.Utils;
+import org.ltc.chatserver.bean.Contact;
+import org.ltc.chatserver.request.BaseRequest;
+import org.ltc.chatserver.request.TalkRequest;
+import org.ltc.chatserver.response.GetContactsResp;
+import org.ltc.chatserver.response.TalkResp;
+import org.ltc.chatserver.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -25,7 +24,7 @@ public class ChatServer extends WebSocketServer {
 	
 	ConcurrentHashMap<String,WebSocket> chats;
 
-	public ChatServer(int port) throws UnknownHostException {
+	public ChatServer(int port) {
 		super(new InetSocketAddress(port));
 		chats = new ConcurrentHashMap<String,WebSocket>();
 	}

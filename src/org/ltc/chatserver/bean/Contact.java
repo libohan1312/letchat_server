@@ -1,4 +1,4 @@
-package org.wlf.java_websocket.bean;
+package org.ltc.chatserver.bean;
 
 public class Contact {
 	private String name;

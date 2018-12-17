@@ -1,8 +1,8 @@
-package org.wlf.java_websocket.response;
+package org.ltc.chatserver.response;
 
 import java.util.List;
 
-import org.wlf.java_websocket.bean.Contact;
+import org.ltc.chatserver.bean.Contact;
 
 /**
  * Created by Administrator on 2016/8/21.

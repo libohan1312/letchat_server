@@ -1,4 +1,4 @@
-package org.wlf.java_websocket.request;
+package org.ltc.chatserver.request;
 
 /**
  * Created by Administrator on 2016/8/21.

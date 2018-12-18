@@ -118,6 +118,11 @@ public class ChatServer extends WebSocketServer {
 				return;
 			}
 			String type2 = baseRequest.getType();
+			if(BaseRequest.TYPE_CONNECT_TEST.equals(baseRequest.getType())){
+				System.out.println("connect test");
+				return;
+			}
+
 			String userId = baseRequest.getUserId();
 			if(BaseRequest.TYPE_GETCONTACTS.equals(type2)){
 				GetContactsResp resp = makeGetContactsResp(userId);

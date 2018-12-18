@@ -28,4 +28,5 @@ public class BaseRequest {
     public static final String TYPE_REGIST = "Regist";
     public static final String TYPE_GETCONTACTS = "GetContacts";
     public static final String TYPE_TALK = "Talk";
+    public static final String TYPE_CONNECT_TEST = "ConnectTest";
 }

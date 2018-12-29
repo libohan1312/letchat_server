@@ -3,6 +3,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.ltc.chatserver.bean.Contact;
+import org.ltc.chatserver.chat.ChatHandler;
 import org.ltc.chatserver.request.BaseRequest;
 import org.ltc.chatserver.request.TalkRequest;
 import org.ltc.chatserver.response.GetContactsResp;
@@ -33,18 +34,20 @@ public class ChatServer extends WebSocketServer {
 		super(address);
 	}
 
-	private void sendInternal(WebSocket conn,String msg){
+	private boolean sendInternal(WebSocket conn,String msg){
 		if(conn.isOpen()){
 			conn.send(msg);
+			return true;
 		}else {
 			chats.remove(conn);
+			return false;
 		}
 	}
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 
-		String userId = handshake.getFieldValue("UserId");
+		final String userId = handshake.getFieldValue("UserId");
 		
 		chats.put(userId, conn);
 		
@@ -58,22 +61,23 @@ public class ChatServer extends WebSocketServer {
 		for(String name : chats.keySet()){
 			System.out.println(name);
 		}
-		Iterator<Entry<String, WebSocket>> iterator = chats.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String,WebSocket> entry = iterator.next();
-			if(entry.getKey().equals(userId)) continue;
-			WebSocket webSocket = entry.getValue();
-			if(webSocket == null || !webSocket.isOpen()){
-				System.out.println("i got no client or client is not opened");
-				return;
-			}
-			System.out.println("hi i got "+entry.getKey());
-			GetContactsResp resp = makeGetContactsResp(entry.getKey());
-			String text = Utils.objectToJson(resp);
-			sendInternal(webSocket,text);
-			System.out.println("i send "+text+" to him");
-		}
-		
+		Utils.executeRunnable(new Runnable() {
+            public void run() {
+                for (Entry<String, WebSocket> entry : chats.entrySet()) {
+                    if (entry.getKey().equals(userId)) continue;
+                    WebSocket webSocket = entry.getValue();
+                    if (webSocket == null || !webSocket.isOpen()) {
+                        System.out.println("i got no client or client is not opened");
+                        return;
+                    }
+                    System.out.println("hi i got " + entry.getKey());
+                    GetContactsResp resp = makeGetContactsResp(entry.getKey());
+                    String text = Utils.objectToJson(resp);
+                    sendInternal(webSocket, text);
+                    System.out.println("i send " + text + " to him");
+                }
+            }
+        });
 	}
 
 	@Override
@@ -140,6 +144,7 @@ public class ChatServer extends WebSocketServer {
 				WebSocket chat = chats.get(toWho);
 				if(chat == null){
 					System.out.println("sorry there is no "+toWho +" who you want to chat!");
+					ChatHandler.saveChat(talkRequest);
 					return;
 				}
 				String content = talkRequest.content;
@@ -148,7 +153,10 @@ public class ChatServer extends WebSocketServer {
 				talkResp.setFromWho(userId);
 
 				String text = Utils.objectToJson(talkResp);
-				sendInternal(chat,text);
+				if(!sendInternal(chat,text)){
+				    //存起来，下次上线发送
+					ChatHandler.saveChat(talkRequest);
+                }
 				return;
 			}
 		} catch (Exception e) {

@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
+import io.netty.util.CharsetUtil;
 import org.ltc.chatserver.request.BaseRequest;
 
 import java.io.IOException;
@@ -36,14 +37,22 @@ public class Utils {
                 paramMap.put(entry.getKey(),entry.getValue().get(0));
             }
         }else if(HttpMethod.POST == fullHttpRequest.method()){
-            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(fullHttpRequest);
-            decoder.offer(fullHttpRequest);
-            for (InterfaceHttpData httpData : decoder.getBodyHttpDatas()) {
-                Attribute data = (Attribute) httpData;
-                paramMap.put(data.getName(),data.getValue());
-            }
+            String data = fullHttpRequest.content().toString(CharsetUtil.UTF_8);
+            return getForm(data);
         }
         return paramMap;
+    }
+
+    private static Map<String,Object> getForm(String data){
+        Map<String,Object> params = new HashMap<>();
+        String[] form = data.split("&");
+        for (String s : form) {
+            String[] kv = s.split("=");
+            if(kv.length == 2){
+                params.put(kv[0],kv[1]);
+            }
+        }
+        return params;
     }
 
     private static ExecutorService executorService = Executors.newFixedThreadPool(50);

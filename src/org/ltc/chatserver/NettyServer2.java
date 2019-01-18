@@ -14,10 +14,10 @@ import org.ltc.chatserver.test.TestHttpChildHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class NettyServer {
+public class NettyServer2 {
     Logger logInfo = Logger.getLogger(getClass().getSimpleName());
     Logger logError = Logger.getLogger(getClass().getSimpleName());
-    public NettyServer(int type, int port){
+    public NettyServer2(int type, int port){
         logError.setLevel(Level.WARNING);
         this.port = port;
         this.type = type;
@@ -50,6 +50,6 @@ public class NettyServer {
 
 
     public static void main(String[] args){
-        new NettyServer(1,8081).startLoop();
+        new NettyServer2(2,8443).startLoop();
     }
 }
